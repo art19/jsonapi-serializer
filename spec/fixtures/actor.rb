@@ -69,7 +69,7 @@ class MethodFilteredActorSerializer < UserSerializer
     object.movies
   end
 
-  def self.filtered_attributes_by_policy(superset, record, params)
+  def self.filtered_attributes_by_policy(superset, _record, params)
     permit = params[:filter_attributes]
 
     case permit
@@ -86,7 +86,7 @@ end
 class CallableFilteredActorSerializer < UserSerializer
   set_type :actor
 
-  attributes_filter do |superset, record, params|
+  attributes_filter do |superset, _record, params|
     permit = params[:filter_attributes]
 
     case permit
