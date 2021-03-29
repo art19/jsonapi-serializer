@@ -135,9 +135,7 @@ module FastJsonapi
       def reflected_record_type
         return @reflected_record_type if defined?(@reflected_record_type)
 
-        @reflected_record_type ||= begin
-          name.split('::').last.chomp('Serializer').underscore.to_sym if name&.end_with?('Serializer')
-        end
+        @reflected_record_type ||= name.split('::').last.chomp('Serializer').underscore.to_sym if name&.end_with?('Serializer')
       end
 
       def set_key_transform(transform_name)
@@ -307,7 +305,7 @@ module FastJsonapi
       #     The arguments to the block are the same as for the method: the superset of attributes, the record getting serialized
       #     and the serializer parameters.
       def attributes_filter(filter_method_name = nil, &block)
-        raise ArgumentError, 'filter_method_name and block are mutually exclusive' if filter_method_name && block_given?
+        raise ArgumentError, 'filter_method_name and block are mutually exclusive' if filter_method_name && block
 
         self.attributes_filter_method = filter_method_name || block
       end
@@ -325,7 +323,7 @@ module FastJsonapi
       #     The arguments to the block are the same as for the method: the superset of attributes, the record getting serialized
       #     and the serializer parameters.
       def relationships_filter(filter_method_name = nil, &block)
-        raise ArgumentError, 'filter_method_name and block are mutually exclusive' if filter_method_name && block_given?
+        raise ArgumentError, 'filter_method_name and block are mutually exclusive' if filter_method_name && block
 
         self.relationships_filter_method = filter_method_name || block
       end
