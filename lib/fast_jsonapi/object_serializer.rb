@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'active_support'
 require 'active_support/time'
 require 'active_support/concern'
 require 'active_support/inflector'
@@ -133,9 +134,7 @@ module FastJsonapi
       def reflected_record_type
         return @reflected_record_type if defined?(@reflected_record_type)
 
-        @reflected_record_type ||= begin
-          name.split('::').last.chomp('Serializer').underscore.to_sym if name&.end_with?('Serializer')
-        end
+        @reflected_record_type ||= (name.split('::').last.chomp('Serializer').underscore.to_sym if name&.end_with?('Serializer'))
       end
 
       def set_key_transform(transform_name)
@@ -228,10 +227,10 @@ module FastJsonapi
 
         # TODO: Remove this undocumented option.
         #   Delegate the caching to the serializer exclusively.
-        if !relationship.cached
-          uncachable_relationships_to_serialize[relationship.name] = relationship
-        else
+        if relationship.cached
           cachable_relationships_to_serialize[relationship.name] = relationship
+        else
+          uncachable_relationships_to_serialize[relationship.name] = relationship
         end
         relationships_to_serialize[relationship.name] = relationship
       end
@@ -302,7 +301,7 @@ module FastJsonapi
 
       def serializer_for(name)
         namespace = self.name.gsub(/()?\w+Serializer$/, '')
-        serializer_name = name.to_s.demodulize.classify + 'Serializer'
+        serializer_name = "#{name.to_s.demodulize.classify}Serializer"
         serializer_class_name = namespace + serializer_name
         begin
           serializer_class_name.constantize
@@ -340,7 +339,7 @@ module FastJsonapi
       def validate_includes!(includes)
         return if includes.blank?
 
-        parse_includes_list(includes).keys.each do |include_item|
+        parse_includes_list(includes).each_key do |include_item|
           relationship_to_include = relationships_to_serialize[include_item]
           raise(JSONAPI::Serializer::UnsupportedIncludeError.new(include_item, name)) unless relationship_to_include
 
