@@ -837,3 +837,21 @@ pull request creation processes.
 This project is intended to be a safe, welcoming space for collaboration, and
 contributors are expected to adhere to the
 [Contributor Covenant](https://contributor-covenant.org) code of conduct.
+
+### Publishing
+
+Releases are manual, performed locally on a developer's machine. Gems are published to Github Packages. A comprehesive outline of this process can be found here: https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-rubygems-registry.
+
+1. Increment the `ART19_REVISION` in [lib/jsonapi/serializer/version.rb#L5](https://github.com/art19/jsonapi-serializer/blob/master/lib/jsonapi/serializer/version.rb#L5)
+
+2. Build the gem:
+
+```
+gem build jsonapi-serializer.gemspec
+```
+
+3. Publish your gem, replacing $VERSION with the gem version. You'll see the generated file after running `gem build` above, eg: 'jsonapi-serializer-2.2.0.1.gem'.
+
+```
+gem push --key github --host https://rubygems.pkg.github.com/art19 jsonapi-serializer-$VERSION.gem
+```
